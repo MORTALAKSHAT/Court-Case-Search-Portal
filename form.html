@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Case Search</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Header Section -->
+    <header class="bg-blue-600 text-white p-6 shadow-lg">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl font-bold tracking-tight">Court Case Search Portal</h1>
+            <p class="mt-2 text-lg opacity-90">Easily find case information by number and type.</p>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-12">
+
+        <!-- Search Form Card -->
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl max-w-lg mx-auto">
+            <h2 class="text-3xl font-semibold text-center mb-6 text-blue-800">Find a Case</h2>
+            <p class="text-center text-slate-600 mb-8">Enter the case details below to retrieve information.</p>
+
+            <form id="search-form" class="space-y-6">
+
+                <!-- Case Type Field -->
+                <div>
+                    <label for="case_type" class="block text-sm font-medium text-slate-700 mb-2">Case Type</label>
+                    <div class="relative">
+                        <select name="case_type" id="case_type" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none bg-white">
+                            <option value="CIVIL">Civil</option>
+                            <option value="CRIMINAL">Criminal</option>
+                            <option value="FAMILY">Family</option>
+                            <option value="BANKRUPTCY">Bankruptcy</option>
+                        </select>
+                        <!-- Custom dropdown arrow SVG for consistency -->
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Number Field -->
+                <div>
+                    <label for="case_no" class="block text-sm font-medium text-slate-700 mb-2">Case Number</label>
+                    <input type="text" name="case_no" id="case_no" required class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" placeholder="e.g., 2024-12345">
+                </div>
+
+                <!-- Filing Year Field -->
+                <div>
+                    <label for="filing_year" class="block text-sm font-medium text-slate-700 mb-2">Filing Year</label>
+                    <input type="number" name="filing_year" id="filing_year" required class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" placeholder="e.g., 2024">
+                </div>
+
+                <!-- Search Button -->
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105">
+                    Search Case
+                </button>
+            </form>
+
+            <!-- Message box for displaying results -->
+            <div id="result-message" class="hidden mt-8 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow-inner">
+                <h3 class="font-bold text-lg mb-2">Search Submitted!</h3>
+                <p><strong>Case Type:</strong> <span id="display-case-type"></span></p>
+                <p><strong>Case Number:</strong> <span id="display-case-no"></span></p>
+                <p><strong>Filing Year:</strong> <span id="display-filing-year"></span></p>
+                <button id="close-message" class="mt-4 text-blue-500 hover:text-blue-700 font-medium">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-200 text-center p-4 mt-12 text-slate-600">
+        <p>&copy; 2024 Court Case Search. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for form handling -->
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const caseType = document.getElementById('case_type').value;
+    const caseNo = document.getElementById('case_no').value;
+    const filingYear = document.getElementById('filing_year').value;
+
+    fetch('/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ case_type: caseType, case_no: caseNo, filing_year: filingYear })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('display-case-type').textContent = caseType;
+        document.getElementById('display-case-no').textContent = caseNo;
+        document.getElementById('display-filing-year').textContent = filingYear;
+
+        const messageBox = document.getElementById('result-message');
+        messageBox.innerHTML += `
+            <p><strong>Parties:</strong> ${data["Parties"]}</p>
+            <p><strong>Filing Date:</strong> ${data["Filing Date"]}</p>
+            <p><strong>Next Hearing:</strong> ${data["Next Hearing"]}</p>
+            <a href="${data["PDF Link"]}" target="_blank" class="text-blue-600 underline">Download Judgment PDF</a>
+        `;
+        messageBox.classList.remove('hidden');
+    });
+});
+
+    </script>
+
+</body>
+</html>

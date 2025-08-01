@@ -1,0 +1,11 @@
+Case No,Filing Date,Case Type,Court Name,Status
+CIV-2023-0001,2023-06-01,Civil,District Court A,Pending
+CRL-2023-0002,2023-06-05,Criminal,District Court B,Closed
+LAB-2023-0003,2023-06-12,Labour,Labour Court,Ongoing
+FAM-2023-0004,2023-06-20,Family,Family Court,Pending
+CIV-2023-0005,2023-06-23,Civil,District Court A,Judgment Reserved
+CRL-2023-0006,2023-06-28,Criminal,Sessions Court,Adjourned
+LAB-2023-0007,2023-07-01,Labour,Labour Court,Pending
+FAM-2023-0008,2023-07-04,Family,Family Court,Hearing Scheduled
+CIV-2023-0009,2023-07-06,Civil,District Court C,Closed
+CRL-2023-0010,2023-07-10,Criminal,Sessions Court,Under Trial
